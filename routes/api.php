@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\ProductCategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,13 +16,12 @@ Route::prefix('v1')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/me', [AuthController::class, 'me']);
+
+        Route::post('/add-category', [ProductCategoryController::class, 'addCategory']);
+        Route::get('/get-categories', [ProductCategoryController::class, 'getCategory']);
     });
 });
 
 Route::get('/test', function () {
-    return response()->json(['message' => 'API is working']);
-});
-
-Route::get('/hello', function () {
     return response()->json(['message' => 'API is working']);
 });
