@@ -19,6 +19,7 @@ Route::prefix('v1')->group(function () {
 
         Route::post('/add-category', [ProductCategoryController::class, 'addCategory']);
         Route::get('/get-categories', [ProductCategoryController::class, 'getCategory']);
+        Route::delete('/delete-category/{id}', [ProductCategoryController::class, 'deleteCategory']);
     });
 });
 

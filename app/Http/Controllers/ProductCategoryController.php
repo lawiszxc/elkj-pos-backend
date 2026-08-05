@@ -25,4 +25,23 @@ class ProductCategoryController extends Controller
 
         return response()->json($category);
     }
+
+    public function updateCategory(Request $request, $id) {
+        $updateCategory = ProductCategory::find($id);
+        $updateCategory->update([
+            'name' => $request->name,
+            'description' => $request->description,
+            'status' => $request->status,
+        ]);
+
+        return response()->json($updateCategory, 200);
+    }
+
+    public function deleteCategory($id)
+    {
+        $deleteCategory = ProductCategory::find($id);
+        $deleteCategory->delete();
+
+        return response()->json($deleteCategory, 200);
+    }
 }
