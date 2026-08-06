@@ -7,13 +7,12 @@ use Illuminate\Http\Request;
 
 class ProductCategoryController extends Controller
 {
-
     public function addCategory(Request $request)
     {
         $addCategory = ProductCategory::create([
             'name' => $request->name,
             'description' => $request->description,
-            'status' => 'Active'
+            'status' => 'Active',
         ]);
 
         return response()->json($addCategory, 200);
@@ -26,16 +25,24 @@ class ProductCategoryController extends Controller
         return response()->json($category);
     }
 
-    public function updateCategory(Request $request, $id) {
-        $updateCategory = ProductCategory::find($id);
-        $updateCategory->update([
-            'name' => $request->name,
-            'description' => $request->description,
-            'status' => $request->status,
-        ]);
+    public function updateCategory(Request $request, $id)
+    {
+        $category = ProductCategory::findOrFail($id);
 
-        return response()->json($updateCategory, 200);
+        $category->update($request->only([
+            'name',
+            'description',
+            'status',
+        ]));
+
+        return response()->json($category);
     }
+
+    // $updateCategory->update([
+    //     'name' => $request->name || null,
+    //     'description' => $request->description || null,
+    //     'status' => $request->status || null,
+    // ]);
 
     public function deleteCategory($id)
     {
