@@ -25,6 +25,7 @@ Route::prefix('v1')->group(function () {
 
         Route::get('/get-products', [ProductController::class, 'getProducts']);
         Route::post('/add-product', [ProductController::class, 'addProduct']);
+        Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProduct']);
     });
 });
 

@@ -9,7 +9,7 @@ class ProductController extends Controller
 {
     public function getProducts()
     {
-        $products = Product::orderBy('product_name', 'ASC')->get();
+        $products = Product::with('product_category')->orderBy('product_name', 'ASC')->get();
 
         return response()->json($products);
     }
@@ -30,5 +30,13 @@ class ProductController extends Controller
         ]);
 
         return response()->json($products);
+    }
+
+    public function deleteProduct($id) {
+        $deleteProduct = Product::findOrFail($id);
+        $deleteProduct->delete();
+
+        return response()->json($deleteProduct, 200);
+
     }
 }
