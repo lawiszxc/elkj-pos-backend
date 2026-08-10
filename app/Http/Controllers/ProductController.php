@@ -25,14 +25,15 @@ class ProductController extends Controller
             'description' => $request->description,
             'cost_price' => $request->cost_price,
             'selling_price' => $request->selling_price,
-            'image' => $request->image,
-            'status' => $request->status,
+            'image' => "https://i0.wp.com/picjumbo.com/wp-content/uploads/detailed-shot-of-ripples-at-sunset-free-image.jpeg?w=600&quality=80",
+            'status' => "Available",
         ]);
 
         return response()->json($products);
     }
 
-    public function deleteProduct($id) {
+    public function deleteProduct($id)
+    {
         $deleteProduct = Product::findOrFail($id);
         $deleteProduct->delete();
 

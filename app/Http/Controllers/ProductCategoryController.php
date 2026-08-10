@@ -20,7 +20,7 @@ class ProductCategoryController extends Controller
 
     public function getCategory()
     {
-        $category = ProductCategory::orderBy('name', 'ASC')->get();
+        $category = ProductCategory::with('products')->orderBy('name', 'ASC')->get();
 
         return response()->json($category);
     }
