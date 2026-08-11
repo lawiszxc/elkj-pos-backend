@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\POSController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
@@ -26,6 +27,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/get-products', [ProductController::class, 'getProducts']);
         Route::post('/add-product', [ProductController::class, 'addProduct']);
         Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProduct']);
+
+        Route::post('/add-sales', [POSController::class, 'addSale']);
     });
 });
 
