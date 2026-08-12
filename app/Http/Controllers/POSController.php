@@ -19,7 +19,10 @@ class POSController extends Controller
             'total_amount' => $request->total_amount,
             'payment_method' => $request->payment_method,
             'amount_paid' => $request->amount_paid,
-            'change_amount' => $request->change_amount,
+            'change_amount' => max(
+                $request->amount_paid - $request->total_amount,
+                0
+            ),
             'status' => 'Done',
         ]);
 
@@ -31,6 +34,7 @@ class POSController extends Controller
         foreach ($request->sale_items as $item) {
             $sale->sale_items()->create([
                 'product_id' => $item['product_id'],
+                'sale_id' => $sale->id,
                 'quantity' => $item['quantity'],
                 'unit_price' => $item['unit_price'],
                 'subtotal' => $item['unit_price'] * $item['quantity'],
