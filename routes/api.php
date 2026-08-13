@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\POSController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductStockController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,9 @@ Route::prefix('v1')->group(function () {
         Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProduct']);
 
         Route::post('/add-sales', [POSController::class, 'addSale']);
+
+        Route::get('/get-product-stocks', [ProductStockController::class, 'getProductStocks']);
+        Route::post('/add-product-stock', [ProductStockController::class, 'addProductStock']);
     });
 });
 

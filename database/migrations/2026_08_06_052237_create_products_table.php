@@ -21,6 +21,7 @@ return new class extends Migration {
             $table->string('cost_price');
             $table->integer('selling_price');
             $table->string('image')->nullable();
+            $table->integer('reorder_level')->nullable();
             $table->string('status');
             $table->timestamps();
         });

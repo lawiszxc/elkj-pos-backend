@@ -9,7 +9,7 @@ class ProductController extends Controller
 {
     public function getProducts()
     {
-        $products = Product::with('product_category')->orderBy('product_name', 'ASC')->get();
+        $products = Product::with(['product_category', 'sale_items', 'product_stocks'])->orderBy('product_name', 'ASC')->get();
 
         return response()->json($products);
     }
