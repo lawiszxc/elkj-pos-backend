@@ -30,6 +30,7 @@ Route::prefix('v1')->group(function () {
         Route::delete('/delete-product/{id}', [ProductController::class, 'deleteProduct']);
 
         Route::post('/add-sales', [POSController::class, 'addSale']);
+        Route::get('/get-sales', [POSController::class, 'getSales']);
 
         Route::get('/get-product-stocks', [ProductStockController::class, 'getProductStocks']);
         Route::post('/add-product-stock', [ProductStockController::class, 'addProductStock']);

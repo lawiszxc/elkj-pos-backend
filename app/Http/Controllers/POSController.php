@@ -23,7 +23,7 @@ class POSController extends Controller
                 $request->amount_paid - $request->total_amount,
                 0
             ),
-            'status' => 'Done',
+            'status' => 'Completed',
         ]);
 
         $sale->update([
@@ -46,4 +46,12 @@ class POSController extends Controller
             'sale_items' => $sale->sale_items,
         ], 200);
     }
+
+    public function getSales()
+    {
+        $sales = Sale::with(['sale_items', 'user'])->orderByDesc('invoice_number')->get();
+
+        return response()->json($sales);
+    }
+
 }
