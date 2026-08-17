@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\POSController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
@@ -34,6 +35,8 @@ Route::prefix('v1')->group(function () {
 
         Route::get('/get-product-stocks', [ProductStockController::class, 'getProductStocks']);
         Route::post('/add-product-stock', [ProductStockController::class, 'addProductStock']);
+
+        Route::get('/dashboard', [DashboardController::class, 'dashboard']);
     });
 });
 
