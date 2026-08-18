@@ -10,11 +10,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('remittances', function (Blueprint $table) {
+        Schema::create('remittance_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('sale_id')->constrained()->onDelete('cascade');
-            $table->string('status');
+            $table->string("remitted_to");
+            $table->string("reference_number");
+            $table->string("date_remitted");
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('remittances');
+        Schema::dropIfExists('remittance_details');
     }
 };

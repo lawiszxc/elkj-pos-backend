@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InternalUseController;
 use App\Http\Controllers\POSController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductStockController;
+use App\Http\Controllers\RemittanceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,7 +38,13 @@ Route::prefix('v1')->group(function () {
         Route::get('/get-product-stocks', [ProductStockController::class, 'getProductStocks']);
         Route::post('/add-product-stock', [ProductStockController::class, 'addProductStock']);
 
+        Route::get('/get-internal-uses', [InternalUseController::class, 'getInternalUses']);
+        Route::post('/add-internal-use', [InternalUseController::class, 'addInternalUse']);
+
         Route::get('/dashboard', [DashboardController::class, 'dashboard']);
+
+        Route::post('/send-remittance', [RemittanceController::class, 'sendRemittance']);
+        Route::get('/get-remittances', [RemittanceController::class, 'getRemittances']);
     });
 });
 

@@ -20,7 +20,6 @@ class ProductStockController extends Controller
         $addProductStock = ProductStock::create([
             'product_id' => $request->product_id,
             'quantity' => $request->quantity,
-            'reorder_level' => $request->reorder_level,
             'created_at' => $request->created_at ?? Carbon::now(),
         ]);
 

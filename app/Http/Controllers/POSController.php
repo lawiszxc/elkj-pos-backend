@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Remittance;
 use App\Models\Sale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,9 +42,16 @@ class POSController extends Controller
             ]);
         }
 
+        $remittance = Remittance::create([
+            'user_id' => Auth::user()->id,
+            'sale_id' => $sale->id,
+            'status' => 'Pending',
+        ]);
+
         return response()->json([
             'sale' => $sale,
             'sale_items' => $sale->sale_items,
+            'remittance' => $remittance
         ], 200);
     }
 

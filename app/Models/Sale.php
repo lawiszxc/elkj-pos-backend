@@ -31,4 +31,9 @@ class Sale extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
+
+    public function remittance(): HasMany
+    {
+        return $this->hasMany(Remittance::class, 'sale_id', 'id');
+    }
 }
