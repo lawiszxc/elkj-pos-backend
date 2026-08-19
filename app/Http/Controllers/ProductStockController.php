@@ -10,7 +10,7 @@ class ProductStockController extends Controller
 {
     public function getProductStocks()
     {
-        $getProductStocks = ProductStock::with('product.product_category')->orderByDesc('created_at')->get();
+        $getProductStocks = ProductStock::with('product.product_category')->where('status', 'Received')->orderByDesc('created_at')->get();
 
         return response()->json($getProductStocks);
     }
@@ -20,6 +20,7 @@ class ProductStockController extends Controller
         $addProductStock = ProductStock::create([
             'product_id' => $request->product_id,
             'quantity' => $request->quantity,
+            'status' => 'Received',
             'created_at' => $request->created_at ?? Carbon::now(),
         ]);
 

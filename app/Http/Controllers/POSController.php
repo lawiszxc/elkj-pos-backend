@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProductReturn;
+use App\Models\ProductStock;
 use App\Models\Remittance;
 use App\Models\Sale;
+use App\Models\SaleItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class POSController extends Controller
 {
@@ -28,9 +32,13 @@ class POSController extends Controller
         ]);
 
         $sale->update([
-            'invoice_number' => 'INV-' . str_pad($sale->id, 6, '0', STR_PAD_LEFT),
+            'invoice_number' => 'INV-' . str_pad(
+                $sale->id,
+                6,
+                '0',
+                STR_PAD_LEFT
+            ),
         ]);
-
 
         foreach ($request->sale_items as $item) {
             $sale->sale_items()->create([
@@ -51,15 +59,168 @@ class POSController extends Controller
         return response()->json([
             'sale' => $sale,
             'sale_items' => $sale->sale_items,
-            'remittance' => $remittance
+            'remittance' => $remittance,
         ], 200);
     }
 
     public function getSales()
     {
-        $sales = Sale::with(['sale_items', 'user'])->orderByDesc('invoice_number')->get();
+        $sales = Sale::with([
+            'sale_items.product',
+            'user'
+        ])
+            ->orderByDesc('invoice_number')
+            ->get();
 
         return response()->json($sales);
     }
 
+    public function returnSaleItem(
+        Request $request,
+        SaleItem $saleItem
+    ) {
+        $request->validate([
+            'quantity' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
+
+            'status' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+        ]);
+
+        $quantity = (int) $request->quantity;
+        $status = $request->status;
+
+        if ($quantity > $saleItem->quantity) {
+            return response()->json([
+                'message' =>
+                    'Return quantity cannot exceed the sold quantity.',
+            ], 422);
+        }
+
+        DB::transaction(function () use ($saleItem, $quantity, $status) {
+            /*
+            |--------------------------------------------------------------------------
+            | Reduce Sold Quantity
+            |--------------------------------------------------------------------------
+            */
+
+            $saleItem->quantity -= $quantity;
+
+            $saleItem->save();
+
+            /*
+            |--------------------------------------------------------------------------
+            | Add Returned Stock
+            |--------------------------------------------------------------------------
+            */
+
+            ProductReturn::create([
+                'product_id' => $saleItem->product_id,
+                'quantity' => $quantity,
+                'status' => $status,
+            ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Update Sale Status
+            |--------------------------------------------------------------------------
+            */
+
+            $sale = $saleItem->sale;
+
+            /*
+            | Check all sale items after the return.
+            |
+            | If all quantities are 0:
+            |     Returned
+            |
+            | If some quantities are still greater than 0:
+            |     Partially Returned
+            |
+            */
+
+            $remainingItems = $sale->sale_items()
+                ->where('quantity', '>', 0)
+                ->exists();
+
+            if ($remainingItems) {
+                $sale->update([
+                    'status' => 'Partially Returned',
+                ]);
+            } else {
+                $sale->update([
+                    'status' => 'Returned',
+                ]);
+            }
+        });
+
+        return response()->json([
+            'message' => 'Item returned successfully.',
+            'sale_item' => $saleItem->fresh(),
+            'sale' => $saleItem->sale->fresh(),
+        ]);
+    }
+
+    public function returnAllSaleItems(
+        Request $request,
+        Sale $sale
+    ) {
+        $request->validate([
+            'status' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+        ]);
+
+        $status = $request->status;
+
+        DB::transaction(function () use ($sale, $status) {
+            $saleItems = $sale->sale_items()
+                ->where('quantity', '>', 0)
+                ->get();
+
+            if ($saleItems->isEmpty()) {
+                abort(
+                    response()->json([
+                        'message' => 'All items in this sale have already been returned.',
+                    ], 422)
+                );
+            }
+
+            foreach ($saleItems as $saleItem) {
+                $quantity = $saleItem->quantity;
+
+                // Add returned stock
+                ProductReturn::create([
+                    'product_id' => $saleItem->product_id,
+                    'quantity' => $quantity,
+                    'status' => $status,
+                ]);
+
+                // Set remaining sold quantity to 0
+                $saleItem->quantity = 0;
+                $saleItem->save();
+            }
+
+            // Update sale status
+            $sale->update([
+                'status' => 'Returned',
+            ]);
+        });
+
+        return response()->json([
+            'message' => 'All sale items returned successfully.',
+            'sale' => $sale->fresh([
+                'sale_items.product',
+                'user',
+            ]),
+        ]);
+    }
 }

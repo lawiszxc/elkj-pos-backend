@@ -44,21 +44,57 @@ class RemittanceController extends Controller
 
     public function getRemittances()
     {
-        $remittances = Remittance::withSum('sale', 'total_amount')
+        /*
+        |--------------------------------------------------------------------------
+        | PENDING REMITTANCES
+        |--------------------------------------------------------------------------
+        | Get all pending remittances together with their sale items.
+        | Expected amount will be calculated using:
+        |
+        | quantity × unit_price
+        |
+        */
+        $remittances = Remittance::with([
+            'sale.sale_items' => function ($query) {
+                $query->select(
+                    'id',
+                    'sale_id',
+                    'quantity',
+                    'unit_price'
+                );
+            },
+        ])
             ->where('status', 'Pending')
             ->get();
 
-        $remitted = Remittance::withSum('sale', 'total_amount')
+        /*
+        |--------------------------------------------------------------------------
+        | REMITTED REMITTANCES
+        |--------------------------------------------------------------------------
+        | Group remitted transactions by the date they were updated/remitted.
+        */
+        $remitted = Remittance::with([
+            'sale.sale_items' => function ($query) {
+                $query->select(
+                    'id',
+                    'sale_id',
+                    'quantity',
+                    'unit_price'
+                );
+            },
+        ])
             ->where('status', 'Remitted')
-            ->orderBy('updated_at', "DESC")
+            ->orderBy('updated_at', 'DESC')
             ->get()
             ->groupBy(function ($remittance) {
                 return $remittance->updated_at->format('Y-m-d');
             })
             ->map(function ($remittances, $date) {
 
-                $detail = RemittanceDetail::whereDate('date_remitted', $date)
-                    ->first();
+                $detail = RemittanceDetail::whereDate(
+                    'date_remitted',
+                    $date
+                )->first();
 
                 return [
                     'date' => $date,

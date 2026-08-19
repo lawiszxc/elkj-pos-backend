@@ -18,6 +18,7 @@ class ProductStockSeeder extends Seeder
             [
                 "product_id" => "7",
                 "quantity" => 10,
+                "status" => 'Received',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -25,6 +26,7 @@ class ProductStockSeeder extends Seeder
             [
                 "product_id" => "10",
                 "quantity" => 8,
+                "status" => 'Received',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -32,12 +34,14 @@ class ProductStockSeeder extends Seeder
             [
                 "product_id" => "4",
                 "quantity" => 10,
+                "status" => 'Received',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
                 "product_id" => "12",
                 "quantity" => 8,
+                "status" => 'Received',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -45,6 +49,7 @@ class ProductStockSeeder extends Seeder
             [
                 "product_id" => "15",
                 "quantity" => 9,
+                "status" => 'Received',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
@@ -52,6 +57,7 @@ class ProductStockSeeder extends Seeder
             [
                 "product_id" => "13",
                 "quantity" => 16,
+                "status" => 'Received',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]

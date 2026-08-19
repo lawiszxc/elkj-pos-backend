@@ -33,6 +33,11 @@ class Product extends Model
         return $this->hasMany(ProductStock::class, 'product_id', 'id');
     }
 
+    public function product_returns(): HasMany
+    {
+        return $this->hasMany(ProductReturn::class, 'product_id', 'id');
+    }
+
     public function internal_uses(): HasMany
     {
         return $this->hasMany(InternalUse::class, 'product_id', 'id');

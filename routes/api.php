@@ -6,6 +6,7 @@ use App\Http\Controllers\InternalUseController;
 use App\Http\Controllers\POSController;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ProductReturnController;
 use App\Http\Controllers\ProductStockController;
 use App\Http\Controllers\RemittanceController;
 use Illuminate\Http\Request;
@@ -34,6 +35,8 @@ Route::prefix('v1')->group(function () {
 
         Route::post('/add-sales', [POSController::class, 'addSale']);
         Route::get('/get-sales', [POSController::class, 'getSales']);
+        Route::post('/sale-items/{saleItem}/return', [POSController::class, 'returnSaleItem']);
+        Route::post('/sales/{sale}/return-all', [POSController::class, 'returnAllSaleItems']);
 
         Route::get('/get-product-stocks', [ProductStockController::class, 'getProductStocks']);
         Route::post('/add-product-stock', [ProductStockController::class, 'addProductStock']);
@@ -45,6 +48,8 @@ Route::prefix('v1')->group(function () {
 
         Route::post('/send-remittance', [RemittanceController::class, 'sendRemittance']);
         Route::get('/get-remittances', [RemittanceController::class, 'getRemittances']);
+
+        Route::get('/get-product-returns', [ProductReturnController::class, 'getProductReturns']);
     });
 });
 
