@@ -10,6 +10,7 @@ use App\Http\Controllers\ProductReturnController;
 use App\Http\Controllers\ProductStockController;
 use App\Http\Controllers\RemittanceController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
@@ -56,4 +57,13 @@ Route::prefix('v1')->group(function () {
 
 Route::get('/test', function () {
     return response()->json(['message' => 'API is working']);
+});
+
+Route::get('/clear-cache', function () {
+    Artisan::call('optimize:clear');
+
+    return response()->json([
+        'message' => 'Laravel cache cleared successfully.',
+        'output' => Artisan::output(),
+    ]);
 });
