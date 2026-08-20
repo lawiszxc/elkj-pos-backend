@@ -17,7 +17,7 @@ class POSController extends Controller
     {
         $sale = Sale::create([
             'user_id' => Auth::user()->id,
-            'customer_id' => $request->customer_id,
+            'customer_name' => $request->customer_name,
             'subtotal' => $request->subtotal,
             'discount' => $request->discount,
             'tax' => $request->tax,

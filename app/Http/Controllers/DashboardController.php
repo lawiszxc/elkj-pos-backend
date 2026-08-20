@@ -15,8 +15,9 @@ class DashboardController extends Controller
         // =====================================================
         // TODAY'S SALES
         // =====================================================
-        $todaySales = Sale::where('created_at', '>=', $today)
-            ->sum('total_amount');
+        $todaySales = SaleItem::where('created_at', '>=', $today)
+            ->selectRaw('SUM(quantity * unit_price) as total')
+            ->value('total') ?? 0;
 
         // =====================================================
         // TODAY'S TRANSACTIONS

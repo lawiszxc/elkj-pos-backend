@@ -39,7 +39,7 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (! Auth::attempt($credentials)) {
+        if (!Auth::attempt($credentials)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid credentials.',
@@ -60,13 +60,13 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        if ($request->user()) {
-            $request->user()->tokens()->delete();
-        }
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return response()->json([
-            'message' => 'Logged out successfully',
-            'status' => 'success',
+            'message' => 'Logged out successfully.',
         ]);
     }
 
